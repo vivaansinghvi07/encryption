@@ -1,6 +1,9 @@
 import random
 import time
 import sys
+import getopt
+import os
+from colorama import Fore
 
 # determines random seed to make things consistent
 FUNC_COUNT_BOUNDS = {"lower": 8, "upper": 16}
@@ -10,19 +13,36 @@ CHAR_SIZE = 7
 HEX_DIGS = 3
 ENCODING = 'ascii'
 
+# stores options
+SHORT_OPTIONS = 'f:k:m:'
+LONG_OPTIONS = ['file=', 'key=', 'message=']
+
 # almost true randomness
 random.seed(time.time_ns())
 
 def main():
-    filename = sys.argv[1]
 
-    # gets input and key
-    bit_arr = get_bits(read_input(filename))
-    if len(sys.argv) < 3:
-        key = get_key()
-        print(f"Your key is: {key}")
+    # clears screen
+    os.system(['clear', 'cls'][os.name == 'nt'])
+
+    # gets settings
+    settings = get_args()  
+
+    # obtains file for reading (optional) and writing (required)
+    filename = settings["filename"]
+
+    # gets the message
+    if not settings["message"]:
+        bit_arr = get_bits(read_input(filename))
     else:
-        key = sys.argv[2]
+        bit_arr = get_bits(settings["message"])
+
+    # gets key
+    if not settings["key"]:
+        key = get_key()
+        print(f"Your key is: {Fore.BLUE}{key}")
+    else:
+        key = settings["key"]
     
     # performs encryption operations
     key = arr_split(list(key), HEX_DIGS)[1::]
@@ -41,6 +61,41 @@ def main():
 
     # writes to output
     write_output(filename, bit_arr)
+
+# gets arguments
+def get_args():
+
+    # stores arguments
+    output = {
+        "filename": None,
+        "key": None,
+        "message": None
+    }
+
+    # remove the file name
+    arg_list = sys.argv[1::]
+
+    try:
+        args = getopt.getopt(arg_list, SHORT_OPTIONS, LONG_OPTIONS)[0]
+
+        # filters arguments
+        for arg, val in args:
+            if arg in ['-f', '--file']:
+                output["filename"] = val
+            elif arg in ['-k', '--key']:
+                output["key"] = val
+            elif arg in ['-m', '--message']:
+                output["message"] = val
+
+        if not output["filename"]:
+            sys.exit()
+
+        # returns dict with the options
+        return output
+
+    except: 
+        print(f"{Fore.RED}Argument Error \n{Fore.RESET}Correct usage is: \n\n{Fore.BLUE}$ python3 encrypt.py -f FILENAME -k KEY -m MESSAGE \n\n{Fore.RESET}You must enter a filename for your output. The rest of the arguments are optional.")
+        sys.exit()
 
 # adds to the dictionary of function mappers
 def register(func, counter=[0]):        # default counter value of 0 so the variable stays
