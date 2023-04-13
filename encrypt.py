@@ -37,6 +37,9 @@ def encrypt():
     else:
         bit_arr = get_bits(settings["message"])
 
+    if len(bit_arr) == 0:
+        print(f"{Fore.RED}Argument Error \n{Fore.RESET}Please do not enter empty messages or files.")
+
     # gets key
     if not settings["key"]:
         key = get_key()
