@@ -3,7 +3,6 @@ import time
 import sys
 
 # determines random seed to make things consistent
-SEED = time.time_ns()
 FUNC_COUNT_BOUNDS = {"lower": 8, "upper": 16}
 DUPL_COUNT_BOUNDS = {"lower": 1, "upper": 4}
 FUNC_MODS = {}
@@ -11,7 +10,8 @@ CHAR_SIZE = 7
 HEX_DIGS = 3
 ENCODING = 'ascii'
 
-random.seed(SEED)
+# almost true randomness
+random.seed(time.time_ns())
 
 def main():
     filename = sys.argv[1]
