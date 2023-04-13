@@ -13,6 +13,35 @@ ENCODING = 'ascii'
 
 random.seed(SEED)
 
+def main():
+    filename = sys.argv[1]
+
+    # gets input and key
+    bit_arr = get_bits(read_input(filename))
+    if len(sys.argv) < 3:
+        key = get_key()
+        print(f"Your key is: {key}")
+    else:
+        key = sys.argv[2]
+    
+    # performs encryption operations
+    key = arr_split(list(key), HEX_DIGS)[1::]
+    
+    # splits into the function mods and the random states
+    func_nums = key[0:len(key) // 2:]
+    state_nums = key[len(key) // 2::]
+    
+    # gets functions and states 
+    funcs = [FUNC_MODS[int("0x" + "".join(num), 16) % len(FUNC_MODS)] for num in func_nums]
+    states = [int("0x" + "".join(num), 16) for num in state_nums]
+
+    # runs everything
+    for func, state in zip(funcs, states):
+        bit_arr = func(bit_arr, state)
+
+    # writes to output
+    write_output(filename, bit_arr)
+
 # adds to the dictionary of function mappers
 def register(func, counter=[0]):        # default counter value of 0 so the variable stays
     FUNC_MODS[counter[0]] = func
@@ -178,31 +207,4 @@ def write_output(f_name, bit_arr):
         f.write(byte_array.decode(ENCODING))
 
 if __name__ == "__main__":  
-
-    filename = sys.argv[1]
-
-    # gets input and key
-    bit_arr = get_bits(read_input(filename))
-    if len(sys.argv) < 3:
-        key = get_key()
-        print(f"Your key is: {key}")
-    else:
-        key = sys.argv[2]
-    
-    # performs encryption operations
-    key = arr_split(list(key), HEX_DIGS)[1::]
-    
-    # splits into the function mods and the random states
-    func_nums = key[0:len(key) // 2:]
-    state_nums = key[len(key) // 2::]
-    
-    # gets functions and states 
-    funcs = [FUNC_MODS[int("0x" + "".join(num), 16) % len(FUNC_MODS)] for num in func_nums]
-    states = [int("0x" + "".join(num), 16) for num in state_nums]
-
-    # runs everything
-    for func, state in zip(funcs, states):
-        bit_arr = func(bit_arr, state)
-
-    # writes to output
-    write_output(filename, bit_arr)
+    main()
