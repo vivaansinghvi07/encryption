@@ -20,7 +20,7 @@ LONG_OPTIONS = ['file=', 'key=', 'message=']
 # almost true randomness
 random.seed(time.time_ns())
 
-def main():
+def encrypt():
 
     # clears screen
     os.system(['clear', 'cls'][os.name == 'nt'])
@@ -262,4 +262,4 @@ def write_output(f_name, bit_arr):
         f.write(byte_array.decode(ENCODING))
 
 if __name__ == "__main__":  
-    main()
+    encrypt()
