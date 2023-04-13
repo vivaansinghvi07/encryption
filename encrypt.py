@@ -1,6 +1,5 @@
 import random
 import time
-import numpy 
 import sys
 
 # determines random seed to make things consistent
