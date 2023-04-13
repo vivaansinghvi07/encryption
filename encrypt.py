@@ -183,10 +183,14 @@ if __name__ == "__main__":
 
     # gets input and key
     bit_arr = get_bits(read_input(filename))
-    key = get_key() if len(sys.argv) < 3 else sys.argv[2]
+    if len(sys.argv) < 3:
+        key = get_key()
+        print(f"Your key is: {key}")
+    else:
+        key = sys.argv[2]
     
     # performs encryption operations
-    key = arr_split(list(key), 3)
+    key = arr_split(list(key), HEX_DIGS)[1::]
     
     # splits into the function mods and the random states
     func_nums = key[0:len(key) // 2:]
