@@ -39,6 +39,7 @@ def encrypt():
 
     if len(bit_arr) == 0:
         print(f"{Fore.RED}Argument Error \n{Fore.RESET}Please do not enter empty messages or files.")
+        sys.exit()
 
     # gets key
     if not settings["key"]:
@@ -213,14 +214,11 @@ def add_hex(bit_arr, state):
 
     random.seed(state)
 
-    # splits bit arr into groups of 7
+    # splits bit arr into groups of ___
     byte_arr = arr_split(bit_arr, CHAR_SIZE)
 
-    # determines what number to add to the hex of the bits
-    adder = random.randint(0, 2**CHAR_SIZE - 1)  # between 00000000 and 11111111
-
-    # shifts by the adder amount
-    num_arr = map(get_num, byte_arr, [adder for _ in range(len(byte_arr))])
+    # shifts by the random added amount
+    num_arr = map(get_num, byte_arr, [random.randint(0, 2**CHAR_SIZE - 1) for _ in range(len(byte_arr))])
 
     # convert back to binary and return
     new_bit_arr = ""
