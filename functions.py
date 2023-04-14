@@ -5,6 +5,7 @@ that are used within both encryption and decryption
 """
 
 import random
+import numpy
 from constants import *
 
 # will be filled later; stores what mods lead to what functions
@@ -118,7 +119,7 @@ def num_arr_to_bin(num_arr):
     # convert back to binary and return
     new_bit_str = ""
     for num in num_arr:
-       new_bit_str += form_bin(num, CHAR_SIZE)
+       new_bit_str += form_base(num, 2, CHAR_SIZE)
 
     return list(new_bit_str)
 
@@ -166,30 +167,15 @@ def arr_split(arr, size):
         new_arr[i // size].append(arr[i])
     return new_arr
 
-# formats a hex to have a certain digit count
-def form_hex(num, digits):
+# formats a number to a base and to have a certain digit count
+def form_base(num, base, digits):
 
-    # converts number to hex
-    hex_num = hex(num)[2::]
+    # converts number 
+    converted_num = numpy.base_repr(num, base=base)
 
-    # series of zeros
+    # makes a series of zeroes in front of the base to meet the digit count
     out_str = "0" * digits
-
-    # puts the hex onto the output
-    out_str = out_str[0:-len(hex_num)] + hex_num
-
-    return out_str
-
-# formats a binary in teh same way
-def form_bin(num, digits):
-    
-    # converts to binary\
-    bin_num = bin(num)[2::]
-
-    # series of zeroes
-    out_str = "0" * digits
-
-    return out_str[0:-len(bin_num)] + bin_num
+    return out_str[0:-len(converted_num)] + converted_num
 
 # read input from file, return string
 def read_input(f_name):
@@ -211,7 +197,7 @@ def str_to_bits(str):
     # get binary values 
     bin_str = ""
     for byte in byte_array:
-        bin_str += form_bin(byte, CHAR_SIZE)       # [2::] slice removes the '0b' in front of the number
+        bin_str += form_base(byte, 2, CHAR_SIZE)       # [2::] slice removes the '0b' in front of the number
 
     return list(bin_str)
 
