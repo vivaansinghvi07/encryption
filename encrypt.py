@@ -5,7 +5,7 @@ import getopt
 import os
 from colorama import Fore   
 from constants import HEX_DIGS, FUNC_COUNT_BOUNDS, KEY_BASE
-from functions import ENCRYPT_FUNCS, str_to_bits, read_input, write_output, arr_split, form_hex
+from functions import ENCRYPT_FUNCS, str_to_bits, read_input, write_output, arr_split, form_base
 
 # stores options
 SHORT_OPTIONS = 'i:o:k:m:'
@@ -50,8 +50,8 @@ def encrypt():
     state_nums = key[len(key) // 2::]
     
     # gets functions and states 
-    funcs = [ENCRYPT_FUNCS[int("0x" + "".join(num), KEY_BASE) % len(ENCRYPT_FUNCS)] for num in func_nums]
-    states = [int("0x" + "".join(num), KEY_BASE) for num in state_nums]
+    funcs = [ENCRYPT_FUNCS[int("".join(num), KEY_BASE) % len(ENCRYPT_FUNCS)] for num in func_nums]
+    states = [int("".join(num), KEY_BASE) for num in state_nums]
 
     # runs everything
     for func, state in zip(funcs, states):
@@ -115,16 +115,16 @@ def get_key():
     # generates function ids
     for _ in range(func_count):         
         
-        # get random hex number
-        func_num = random.randint(0, 255)
-        key += form_hex(func_num, HEX_DIGS)   # strip off the "0x"
+        # get random number in the base
+        func_num = random.randint(0, KEY_BASE**HEX_DIGS-1)
+        key += form_base(func_num, KEY_BASE, HEX_DIGS)   # strip off the "0x"
 
     # generate random states
     for _ in range(func_count):
-        random_state = random.randint(0, 4095)
-        key += form_hex(random_state, HEX_DIGS)
+        random_state = random.randint(0, KEY_BASE**HEX_DIGS-1)
+        key += form_base(random_state, KEY_BASE, HEX_DIGS)
 
-    return key
+    return key.lower()
 
 if __name__ == "__main__":  
     encrypt()
