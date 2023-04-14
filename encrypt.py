@@ -5,7 +5,7 @@ import getopt
 import os
 from colorama import Fore   
 from constants import HEX_DIGS, FUNC_COUNT_BOUNDS, KEY_BASE
-from functions import ENCRYPT_FUNCS, str_to_bits, write_output, arr_split, form_base
+from functions import ENCRYPT_FUNCS, str_to_bits, arr_split, form_base
 
 # stores options
 SHORT_OPTIONS = 'i:o:k:m:'
@@ -15,9 +15,6 @@ LONG_OPTIONS = ['infile=', 'outfile=', 'key=', 'message=']
 random.seed(time.time_ns())
 
 def encrypt():
-
-    # clears screen
-    os.system(['clear', 'cls'][os.name == 'nt'])
 
     # gets settings
     settings = get_args()  
@@ -59,7 +56,7 @@ def encrypt():
 
     # writes to output
     outfile = settings["outfile"]
-    write_binary(outfile, bit_arr)
+    write_cypher(outfile, bit_arr)
 
 # gets arguments
 def get_args():
@@ -132,9 +129,14 @@ def read_input(f_name):
         return f.read()
     
 # write the binary
-def write_binary(f_name, bit_arr):
+def write_cypher(f_name, bit_arr):
     with open(f_name, "w") as f:
         f.write("".join(bit_arr))
 
 if __name__ == "__main__":  
+
+    # clears screen
+    os.system(['clear', 'cls'][os.name == 'nt'])
+
+    # performs encryption
     encrypt()

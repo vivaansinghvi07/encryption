@@ -19,7 +19,7 @@ def decrypt():
     infile = settings['infile']
 
     # read input file
-    bit_arr = read_binary(infile)
+    bit_arr = read_cypher(infile)
 
     # performs encryption operations
     key = arr_split(list(key), HEX_DIGS)
@@ -82,7 +82,7 @@ def get_args():
         sys.exit()
 
 # reads bits from the text file and returns an array of characters
-def read_binary(f_name):
+def read_cypher(f_name):
     with open(f_name) as f:
         return list(f.read())
 
