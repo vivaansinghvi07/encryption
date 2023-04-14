@@ -15,10 +15,12 @@ DECRYPT_FUNCS = {}
 def register_encryption(func, counter=[0]):        # default counter value of 0 so the variable stays
     ENCRYPT_FUNCS[counter[0]] = func
     counter[0] += 1
+    return func
 
 def register_decryption(func, counter=[0]):
     DECRYPT_FUNCS[counter[0]] = func
     counter [0] += 1
+    return func
 
 # shuffles a bit array: [1, 1, 1, 1, 0, 0, 0, 0] => [0, 1, 1, 0, 0, 1, 0, 1, 1]
 @register_encryption
@@ -26,9 +28,32 @@ def shuf_bits(bit_arr, state):
 
     random.seed(state)
 
-    # shuffle bits and return new string
-    random.shuffle(bit_arr)
-    return bit_arr
+    # copies array as to not override arg
+    new_arr = [bit for bit in bit_arr]
+
+    # shuffle bits and return new
+    random.shuffle(new_arr)
+    return new_arr
+
+# unshuffles a bit array by simulating what happened and reversing it
+@register_decryption
+def undo_shuf_bits(bit_arr, state):
+
+    random.seed(state)
+
+    # stores the shuffled indeces
+    comparison_arr = [i for i in range(len(bit_arr))]
+    random.shuffle(comparison_arr)
+
+    # blank new array
+    new_arr = [None for _ in range(len(bit_arr))]
+
+    # maps values
+    for old_index, shuffled_index in enumerate(comparison_arr):
+        new_arr[shuffled_index] = bit_arr[old_index]
+
+    # return unshuffled array
+    return new_arr
 
 # translates a bit array: [1, 0, 1, 1, 1, 1, 0] => [1, 1, 1, 1, 0, 1, 0]
 @register_encryption
@@ -41,7 +66,19 @@ def shift_bits(bit_arr, state):
 
     # shifts the list
     new_arr = bit_arr[shift_index::] + bit_arr[0:shift_index]
+    return new_arr
 
+# translates a bit array in the opposite direction
+@register_decryption
+def undo_shift_bits(bit_arr, state):
+    
+    random.seed(state)
+
+    # determines what the random index was
+    shift_index = random.randint(0, len(bit_arr) - 1)
+
+    # shifts the list in the opposite direction
+    new_arr = bit_arr[-shift_index::] + bit_arr[0:-shift_index:]
     return new_arr
 
 # duplicate bit array: [1, 0, 1] * n => [1, 0, 1, 1, 0, 1, ..., 1, 0, 1]
@@ -58,14 +95,36 @@ def dupl_bits(bit_arr, state):
 
     return new_arr
 
+# divides the array by the duplicated amount
+@register_decryption
+def undo_dupl_bits(bit_arr, state):
+
+    random.seed(state)
+
+    # determines how many duplications were done
+    dupl = random.randint(DUPL_COUNT_BOUNDS["lower"], DUPL_COUNT_BOUNDS["upper"])
+
+    # undos the duplication
+    new_arr = bit_arr[:len(bit_arr) // dupl:]
+    return new_arr
+
+# for number formattings
+def get_num(byte, adder):
+    num = int("0b" + "".join(byte), 2)
+    return (num + adder) % 2**CHAR_SIZE
+
+# converts a byte_array of numbers to binary
+def num_arr_to_bin(num_arr):
+    # convert back to binary and return
+    new_bit_str = ""
+    for num in num_arr:
+       new_bit_str += form_bin(num, CHAR_SIZE)
+
+    return list(new_bit_str)
+
 # adds to the hex values of each byte in the bit array: [00000000, ...] + n => [00000101, ...] when n = 5
 @register_encryption
 def add_hex(bit_arr, state):
-
-    # for number formattings
-    def get_num(byte, adder):
-        num = int("0b" + "".join(byte), 2)
-        return (num + adder) % 2**CHAR_SIZE
 
     random.seed(state)
 
@@ -76,11 +135,20 @@ def add_hex(bit_arr, state):
     num_arr = map(get_num, byte_arr, [random.randint(0, 2**CHAR_SIZE - 1) for _ in range(len(byte_arr))])
 
     # convert back to binary and return
-    new_bit_arr = ""
-    for num in num_arr:
-       new_bit_arr += form_bin(num, CHAR_SIZE)
+    return num_arr_to_bin(num_arr)
 
-    return list(new_bit_arr)
+@register_decryption
+def undo_add_hex(bit_arr, state):
+
+    random.seed(state)
+
+    # splits into groups of ___
+    byte_arr = arr_split(bit_arr, CHAR_SIZE)
+
+    # shifts the opposite direction by the amount
+    num_arr = map(get_num, byte_arr, [- random.randint(0, 2**CHAR_SIZE - 1) for _ in range(len(byte_arr))])
+
+    return num_arr_to_bin(num_arr)
 
 # splits an array into chunks of size <size>
 def arr_split(arr, size):
