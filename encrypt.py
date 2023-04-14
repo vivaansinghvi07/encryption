@@ -49,7 +49,7 @@ def encrypt():
         key = settings["key"]
     
     # performs encryption operations
-    key = arr_split(list(key), HEX_DIGS)[1::]
+    key = arr_split(list(key), HEX_DIGS)
     
     # splits into the function mods and the random states
     func_nums = key[0:len(key) // 2:]
@@ -123,8 +123,6 @@ def get_key():
 
     # function count - determines how many encryption functions are done
     func_count = random.randint(FUNC_COUNT_BOUNDS["lower"], FUNC_COUNT_BOUNDS["upper"])
-
-    key += form_hex(func_count, HEX_DIGS)
 
     # generates function ids
     for _ in range(func_count):         
