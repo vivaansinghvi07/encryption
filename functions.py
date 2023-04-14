@@ -177,17 +177,6 @@ def form_base(num, base, digits):
     out_str = "0" * digits
     return out_str[0:-len(converted_num)] + converted_num
 
-# read input from file, return string
-def read_input(f_name):
-    with open(f_name, "r") as f:
-        return f.read()
-    
-# write bit-array input to file
-def write_output(f_name, bit_arr):
-    # converts to string and writes
-    with open(f_name, "w") as f:
-        f.write(bits_to_str(bit_arr))
-
 # converts a string to bits
 def str_to_bits(str):
 
