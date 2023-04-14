@@ -14,8 +14,8 @@ HEX_DIGS = 3
 ENCODING = 'ascii'
 
 # stores options
-SHORT_OPTIONS = 'f:k:m:'
-LONG_OPTIONS = ['file=', 'key=', 'message=']
+SHORT_OPTIONS = 'i:o:k:m:'
+LONG_OPTIONS = ['infile=', 'outfile=', 'key=', 'message=']
 
 # almost true randomness
 random.seed(time.time_ns())
@@ -29,16 +29,16 @@ def encrypt():
     settings = get_args()  
 
     # obtains file for reading (optional) and writing (required)
-    filename = settings["filename"]
+    infile = settings["infile"]
 
     # gets the message
-    if not settings["message"]:
-        bit_arr = get_bits(read_input(filename))
+    if infile:
+        bit_arr = get_bits(read_input(infile))
     else:
         bit_arr = get_bits(settings["message"])
 
     if len(bit_arr) == 0:
-        print(f"{Fore.RED}Argument Error \n{Fore.RESET}Please do not enter empty messages or files.")
+        print(f"{Fore.RED}Argument Error \n\n{Fore.RESET}Please do not enter empty messages or files.\n")
         sys.exit()
 
     # gets key
@@ -64,14 +64,16 @@ def encrypt():
         bit_arr = func(bit_arr, state)
 
     # writes to output
-    write_output(filename, bit_arr)
+    outfile = settings["outfile"]
+    write_output(outfile, bit_arr)
 
 # gets arguments
 def get_args():
 
     # stores arguments
     output = {
-        "filename": None,
+        "infile": None,
+        "outfile": None,
         "key": None,
         "message": None
     }
@@ -84,21 +86,27 @@ def get_args():
 
         # filters arguments
         for arg, val in args:
-            if arg in ['-f', '--file']:
-                output["filename"] = val
+            if arg in ['-i', '--infile']:
+                output["infile"] = val
+            elif arg in ['-o', '--outfile']:
+                output["outfile"] = val
             elif arg in ['-k', '--key']:
                 output["key"] = val
             elif arg in ['-m', '--message']:
                 output["message"] = val
 
-        if not output["filename"]:
+        # checks if no message given or no output given
+        if (not output['infile'] and not output['message']) or (output['infile'] and output['message']):
+            sys.exit()
+
+        if not output['outfile']:
             sys.exit()
 
         # returns dict with the options
         return output
 
     except: 
-        print(f"{Fore.RED}Argument Error \n{Fore.RESET}Correct usage is: \n\n{Fore.BLUE}$ python3 encrypt.py -f FILENAME -k KEY -m MESSAGE \n\n{Fore.RESET}You must enter a filename for your output. The rest of the arguments are optional.")
+        print(f"{Fore.RED}Argument Error \n\n{Fore.RESET}Correct usage is: \n\n{Fore.BLUE}$ python3 encrypt.py -i INFILENAME -o OUTFILENAME -k KEY -m MESSAGE \n\n{Fore.RESET}You must either have a infile or a message, not both or neither. You also must include an outfile where the encrypted message is written. The rest of the arguments are optional, and the program will adapt depending on their presence.\n")
         sys.exit()
 
 # adds to the dictionary of function mappers
@@ -251,16 +259,22 @@ def read_input(f_name):
         return f.read()
     
 def write_output(f_name, bit_arr):
-    
+
+    # converts to string and writes
+    with open(f_name, "w") as f:
+        f.write(bits_to_str(bit_arr))
+
+def bits_to_str(bit_arr):
+
     # converts to binary char 
     bin_char_arr = arr_split(bit_arr, CHAR_SIZE)
 
     # converts to byte array
     byte_array = bytes([int("0b" + "".join(bin_num), 2) for bin_num in bin_char_arr])
 
-    # converts to string and writes
-    with open(f_name, "w") as f:
-        f.write(byte_array.decode(ENCODING))
+    # converts back to string
+    return byte_array.decode(ENCODING) 
+
 
 if __name__ == "__main__":  
     encrypt()
