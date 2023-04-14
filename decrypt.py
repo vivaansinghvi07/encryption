@@ -3,7 +3,7 @@ import sys
 import os
 from colorama import Fore
 from constants import HEX_DIGS, KEY_BASE
-from functions import DECRYPT_FUNCS, arr_split, str_to_bits, bits_to_str, read_input, write_output
+from functions import DECRYPT_FUNCS, arr_split, bits_to_str
 
 SHORT_OPTIONS = "i:k:o:"
 LONG_OPTIONS = ['infile=', 'key=', 'outfile=']
@@ -19,7 +19,7 @@ def decrypt():
     infile = settings['infile']
 
     # read input file
-    bit_arr = str_to_bits(read_input(infile))
+    bit_arr = read_binary(infile)
 
     # performs encryption operations
     key = arr_split(list(key), HEX_DIGS)
@@ -80,6 +80,16 @@ def get_args():
     except: 
         print(f"{Fore.RED}Argument Error \n\n{Fore.RESET}Correct usage is: \n\n{Fore.BLUE}$ python3 decrypt.py -i INFILENAME -o OUTFILENAME -k KEY \n\n{Fore.RESET}You must have an infile and a key. You may include an outfile to which your output will be written.\n")
         sys.exit()
+
+# reads bits from the text file and returns an array of characters
+def read_binary(f_name):
+    with open(f_name) as f:
+        return list(f.read())
+
+# writes the decrypted result to a text file
+def write_output(f_name, bit_arr):
+    with open(f_name, "w") as f:
+        f.write(bits_to_str(bit_arr))
 
 if __name__ == "__main__":
     decrypt()

@@ -5,7 +5,7 @@ import getopt
 import os
 from colorama import Fore   
 from constants import HEX_DIGS, FUNC_COUNT_BOUNDS, KEY_BASE
-from functions import ENCRYPT_FUNCS, str_to_bits, read_input, write_output, arr_split, form_base
+from functions import ENCRYPT_FUNCS, str_to_bits, write_output, arr_split, form_base
 
 # stores options
 SHORT_OPTIONS = 'i:o:k:m:'
@@ -59,7 +59,7 @@ def encrypt():
 
     # writes to output
     outfile = settings["outfile"]
-    write_output(outfile, bit_arr)
+    write_binary(outfile, bit_arr)
 
 # gets arguments
 def get_args():
@@ -125,6 +125,16 @@ def get_key():
         key += form_base(random_state, KEY_BASE, HEX_DIGS)
 
     return key.lower()
+
+# read input from file, return string
+def read_input(f_name):
+    with open(f_name, "r") as f:
+        return f.read()
+    
+# write the binary
+def write_binary(f_name, bit_arr):
+    with open(f_name, "w") as f:
+        f.write("".join(bit_arr))
 
 if __name__ == "__main__":  
     encrypt()
