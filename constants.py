@@ -4,3 +4,4 @@ DUPL_COUNT_BOUNDS = {"lower": 1, "upper": 4}    # bounds for duplication count
 CHAR_SIZE = 7                                   # the size of a character in bits
 HEX_DIGS = 3                                    # the number of hex digits for each function in the key
 ENCODING = 'ascii'                              # type of text encoding used
+KEY_BASE = 16                                   # base in which the key is defined
