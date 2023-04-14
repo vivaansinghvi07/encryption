@@ -1,5 +1,6 @@
 import getopt
 import sys
+import os
 from colorama import Fore
 from constants import HEX_DIGS, KEY_BASE
 from functions import DECRYPT_FUNCS, arr_split, str_to_bits, bits_to_str, read_input, write_output
@@ -8,6 +9,9 @@ SHORT_OPTIONS = "i:k:o:"
 LONG_OPTIONS = ['infile=', 'key=', 'outfile=']
 
 def decrypt():
+
+    # clears screen
+    os.system(['clear', 'cls'][os.name == 'nt'])
 
     # get settings
     settings = get_args()
@@ -38,7 +42,7 @@ def decrypt():
 
     # writes the bits to output
     if not settings["outfile"]:
-        print(bits_to_str(bit_arr))
+        print(f"Your decrypted message is:\n\n{bits_to_str(bit_arr)}\n")
     else:
         write_output(settings["outfile"], bit_arr)
 
