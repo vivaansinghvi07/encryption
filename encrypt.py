@@ -4,8 +4,6 @@ import sys
 import getopt
 import os
 from colorama import Fore   
-
-# load functions and constants used
 from constants import HEX_DIGS, FUNC_COUNT_BOUNDS
 from functions import str_to_bits, ENCRYPT_FUNCS, read_input, write_output, arr_split, form_hex
 
