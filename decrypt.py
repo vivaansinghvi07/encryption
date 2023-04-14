@@ -2,7 +2,7 @@ import getopt
 import sys
 from colorama import Fore
 from constants import HEX_DIGS, KEY_BASE
-from functions import arr_split, DECRYPT_FUNCS
+from functions import DECRYPT_FUNCS, arr_split, str_to_bits, bits_to_str, read_input, write_output
 
 SHORT_OPTIONS = "i:k:o:"
 LONG_OPTIONS = ['infile=', 'key=', 'outfile=']
@@ -12,8 +12,10 @@ def decrypt():
     # get settings
     settings = get_args()
     key = settings['key']
-    
-    # execute all the reserve functions in reverse order
+    infile = settings['infile']
+
+    # read input file
+    bit_arr = str_to_bits(read_input(infile))
 
     # performs encryption operations
     key = arr_split(list(key), HEX_DIGS)
@@ -26,7 +28,19 @@ def decrypt():
     funcs = [DECRYPT_FUNCS[int("0x" + "".join(num), KEY_BASE) % len(DECRYPT_FUNCS)] for num in func_nums]
     states = [int("0x" + "".join(num), KEY_BASE) for num in state_nums]
 
+    # execute all the reserve functions in reverse order
+    funcs = funcs[::-1]
+    states = states[::-1]
+
     # reverse the functions and states
+    for func, state in zip(funcs, states):
+        bit_arr = func(bit_arr, state)
+
+    # writes the bits to output
+    if not settings["outfile"]:
+        print(bits_to_str(bit_arr))
+    else:
+        write_output(settings["outfile"], bit_arr)
 
 def get_args():
 
@@ -62,3 +76,6 @@ def get_args():
     except: 
         print(f"{Fore.RED}Argument Error \n\n{Fore.RESET}Correct usage is: \n\n{Fore.BLUE}$ python3 decrypt.py -i INFILENAME -o OUTFILENAME -k KEY \n\n{Fore.RESET}You must have an infile and a key. You may include an outfile to which your output will be written.\n")
         sys.exit()
+
+if __name__ == "__main__":
+    decrypt()
