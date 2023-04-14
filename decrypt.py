@@ -2,11 +2,8 @@ import getopt
 import sys
 import os
 from colorama import Fore
-from constants import HEX_DIGS, KEY_BASE
+from constants import HEX_DIGS, KEY_BASE, DECRYPT_LONG_OPTIONS, DECRYPT_SHORT_OPTIONS
 from functions import DECRYPT_FUNCS, arr_split, bits_to_str
-
-SHORT_OPTIONS = "i:k:o:"
-LONG_OPTIONS = ['infile=', 'key=', 'outfile=']
 
 def decrypt():
 
@@ -59,7 +56,7 @@ def get_args():
     arg_list = sys.argv[1::]
 
     try:
-        args = getopt.getopt(arg_list, SHORT_OPTIONS, LONG_OPTIONS)[0]
+        args = getopt.getopt(arg_list, DECRYPT_SHORT_OPTIONS, DECRYPT_LONG_OPTIONS)[0]
 
         # filters arguments
         for arg, val in args:

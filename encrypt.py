@@ -4,12 +4,8 @@ import sys
 import getopt
 import os
 from colorama import Fore   
-from constants import HEX_DIGS, FUNC_COUNT_BOUNDS, KEY_BASE
+from constants import HEX_DIGS, FUNC_COUNT_BOUNDS, KEY_BASE, ENCRYPT_LONG_OPTIONS, ENCRYPT_SHORT_OPTIONS
 from functions import ENCRYPT_FUNCS, str_to_bits, arr_split, form_base
-
-# stores options
-SHORT_OPTIONS = 'i:o:k:m:'
-LONG_OPTIONS = ['infile=', 'outfile=', 'key=', 'message=']
 
 # almost true randomness
 random.seed(time.time_ns())
@@ -73,7 +69,7 @@ def get_args():
     arg_list = sys.argv[1::]
 
     try:
-        args = getopt.getopt(arg_list, SHORT_OPTIONS, LONG_OPTIONS)[0]
+        args = getopt.getopt(arg_list, ENCRYPT_SHORT_OPTIONS, ENCRYPT_LONG_OPTIONS)[0]
 
         # filters arguments
         for arg, val in args:
