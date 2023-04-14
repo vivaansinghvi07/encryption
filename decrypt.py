@@ -25,8 +25,8 @@ def decrypt():
     state_nums = key[len(key) // 2::]
     
     # gets functions and states 
-    funcs = [DECRYPT_FUNCS[int("0x" + "".join(num), KEY_BASE) % len(DECRYPT_FUNCS)] for num in func_nums]
-    states = [int("0x" + "".join(num), KEY_BASE) for num in state_nums]
+    funcs = [DECRYPT_FUNCS[int("".join(num), KEY_BASE) % len(DECRYPT_FUNCS)] for num in func_nums]
+    states = [int("".join(num), KEY_BASE) for num in state_nums]
 
     # execute all the reserve functions in reverse order
     funcs = funcs[::-1]
