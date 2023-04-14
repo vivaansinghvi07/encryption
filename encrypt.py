@@ -4,8 +4,8 @@ import sys
 import getopt
 import os
 from colorama import Fore   
-from constants import HEX_DIGS, FUNC_COUNT_BOUNDS
-from functions import str_to_bits, ENCRYPT_FUNCS, read_input, write_output, arr_split, form_hex
+from constants import HEX_DIGS, FUNC_COUNT_BOUNDS, KEY_BASE
+from functions import ENCRYPT_FUNCS, str_to_bits, read_input, write_output, arr_split, form_hex
 
 # stores options
 SHORT_OPTIONS = 'i:o:k:m:'
@@ -50,8 +50,8 @@ def encrypt():
     state_nums = key[len(key) // 2::]
     
     # gets functions and states 
-    funcs = [ENCRYPT_FUNCS[int("0x" + "".join(num), 16) % len(ENCRYPT_FUNCS)] for num in func_nums]
-    states = [int("0x" + "".join(num), 16) for num in state_nums]
+    funcs = [ENCRYPT_FUNCS[int("0x" + "".join(num), KEY_BASE) % len(ENCRYPT_FUNCS)] for num in func_nums]
+    states = [int("0x" + "".join(num), KEY_BASE) for num in state_nums]
 
     # runs everything
     for func, state in zip(funcs, states):
