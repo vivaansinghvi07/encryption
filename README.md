@@ -2,7 +2,10 @@
 Uses various techniques to encrypt a string of text.
 
 ## Usage
-- First, you will need to install the necessary libaries. Do this by running:
+
+Download all the python files of the repository to a folder. See [here](https://www.gitkraken.com/learn/git/github-download#how-to-downlaod-a-file-from-github) on how to download files from GitHub. Then, follow the instructions below to encrypt and decrypt files.
+
+- First, you will need to install the necessary libaries. Do this by running the following onto your terminal:
 
     ```
     $ pip3 install colorama
