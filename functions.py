@@ -111,7 +111,7 @@ def undo_dupl_bits(bit_arr, state):
 
 # for number formattings
 def get_num(byte, adder):
-    num = int("0b" + "".join(byte), 2)
+    num = int("".join(byte), 2)
     return (num + adder) % 2**CHAR_SIZE
 
 # converts a byte_array of numbers to binary
@@ -197,7 +197,22 @@ def bits_to_str(bit_arr):
     bin_char_arr = arr_split(bit_arr, CHAR_SIZE)
 
     # converts to byte array
-    byte_array = bytes([int("0b" + "".join(bin_num), 2) for bin_num in bin_char_arr])
+    byte_array = bytes([int("".join(bin_num), 2) for bin_num in bin_char_arr])
 
     # converts back to string
     return byte_array.decode(ENCODING) 
+
+# returns a random list of characters to be in the encryption
+def random_char_reference(state):
+
+    # first, randomize the index using the given random state (last in the key) and shuffle
+    random.seed(state)
+    indeces = [i for i in range(2**POSSIBLE_CHAR_SIZE)]
+    random.shuffle(indeces)
+
+    # then, map these random indeces to the list of characters  
+    char_reference = [None for _ in range(len(indeces))]
+    for old_index, new_index in enumerate(indeces):
+        char_reference[new_index] = POSSIBLE_CHARS[old_index]
+
+    return char_reference
