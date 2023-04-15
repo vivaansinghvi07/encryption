@@ -84,20 +84,25 @@ def read_cypher(f_name, state):     # random state needed for conversion back to
         crypt_str = list(f.read())
 
     # determines the index where leftover bits are
-    split_index = len(crypt_str)
-    try:
-        while crypt_str[split_index].isnumeric():
+    if crypt_str[-1].isnumeric():
+        split_index = len(crypt_str)
+        while crypt_str[split_index - 1].isnumeric():
             split_index -= 1
         
         # splits into chars and leftovers
         chars = crypt_str[:split_index:]
         leftover_bits = crypt_str[split_index::]
-    except:
+    else:
         chars = crypt_str[::]
         leftover_bits = []
 
     # determines the refernece
     char_reference = random_char_reference(state)
+    
+    # flip the reference and get letters pointing to numbers
+    flip_reference = {}
+    for num, char in enumerate(char_reference):
+        flip_reference[char] = num
 
     # gets numbers and adds to bit list
     bit_arr = []

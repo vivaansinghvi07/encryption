@@ -2,7 +2,7 @@ import math
 
 # constants to keep things consistent - changeable for more security, etc
 FUNC_COUNT_BOUNDS = {"lower": 8, "upper": 16}   # number of functions to be exectued in encryption
-DUPL_COUNT_BOUNDS = {"lower": 1, "upper": 3}    # bounds for duplication count
+DUPL_COUNT_BOUNDS = {"lower": 1, "upper": 4}    # bounds for duplication count
 HEX_DIGS = 3                                    # the number of hex digits for each function in the key
 KEY_BASE = 29                                   # base in which the key is defined
 
