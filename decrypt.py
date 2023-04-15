@@ -2,8 +2,8 @@ import getopt
 import sys
 import os
 from colorama import Fore
-from constants import HEX_DIGS, KEY_BASE, DECRYPT_LONG_OPTIONS, DECRYPT_SHORT_OPTIONS
-from functions import DECRYPT_FUNCS, arr_split, bits_to_str
+from constants import HEX_DIGS, KEY_BASE, DECRYPT_LONG_OPTIONS, DECRYPT_SHORT_OPTIONS, POSSIBLE_CHAR_SIZE
+from functions import DECRYPT_FUNCS, arr_split, bits_to_str, random_char_reference, form_base
 
 def decrypt():
 
@@ -15,9 +15,6 @@ def decrypt():
     key = settings['key']
     infile = settings['infile']
 
-    # read input file
-    bit_arr = read_cypher(infile)
-
     # performs encryption operations
     key = arr_split(list(key), HEX_DIGS)
     
@@ -28,6 +25,9 @@ def decrypt():
     # gets functions and states 
     funcs = [DECRYPT_FUNCS[int("".join(num), KEY_BASE) % len(DECRYPT_FUNCS)] for num in func_nums]
     states = [int("".join(num), KEY_BASE) for num in state_nums]
+
+    # read input file
+    bit_arr = read_cypher(infile, states[-1])
 
     # execute all the reserve functions in reverse order
     funcs = funcs[::-1]
@@ -79,10 +79,36 @@ def get_args():
         sys.exit()
 
 # reads bits from the text file and returns an array of characters
-def read_cypher(f_name):
+def read_cypher(f_name, state):     # random state needed for conversion back to bit array
     with open(f_name) as f:
-        return list(f.read())
+        crypt_str = list(f.read())
 
+    # determines the index where leftover bits are
+    split_index = len(crypt_str)
+    try:
+        while crypt_str[split_index].isnumeric():
+            split_index -= 1
+        
+        # splits into chars and leftovers
+        chars = crypt_str[:split_index:]
+        leftover_bits = crypt_str[split_index::]
+    except:
+        chars = crypt_str[::]
+        leftover_bits = []
+
+    # determines the refernece
+    char_reference = random_char_reference(state)
+
+    # gets numbers and adds to bit list
+    bit_arr = []
+    for char in chars:
+        bit_arr += list(form_base(char_reference.index(char), 2, POSSIBLE_CHAR_SIZE))
+    
+    # add leftovers
+    bit_arr += leftover_bits
+
+    return bit_arr
+    
 # writes the decrypted result to a text file
 def write_output(f_name, bit_arr):
     with open(f_name, "w") as f:

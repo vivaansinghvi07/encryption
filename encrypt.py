@@ -4,8 +4,8 @@ import sys
 import getopt
 import os
 from colorama import Fore   
-from constants import HEX_DIGS, FUNC_COUNT_BOUNDS, KEY_BASE, ENCRYPT_LONG_OPTIONS, ENCRYPT_SHORT_OPTIONS
-from functions import ENCRYPT_FUNCS, str_to_bits, arr_split, form_base
+from constants import HEX_DIGS, FUNC_COUNT_BOUNDS, KEY_BASE, ENCRYPT_LONG_OPTIONS, ENCRYPT_SHORT_OPTIONS, POSSIBLE_CHAR_SIZE
+from functions import ENCRYPT_FUNCS, str_to_bits, arr_split, form_base, random_char_reference
 
 # almost true randomness
 random.seed(time.time_ns())
@@ -52,7 +52,7 @@ def encrypt():
 
     # writes to output
     outfile = settings["outfile"]
-    write_cypher(outfile, bit_arr)
+    write_cypher(outfile, bit_arr, states[-1])
 
 # gets arguments
 def get_args():
@@ -125,9 +125,26 @@ def read_input(f_name):
         return f.read()
     
 # write the binary
-def write_cypher(f_name, bit_arr):
+def write_cypher(f_name, bit_arr, state):
+
+    # rounds down to nearest 
+    split_index = len(bit_arr) // POSSIBLE_CHAR_SIZE * POSSIBLE_CHAR_SIZE
+
+    # splits bit array
+    convertible_bits = arr_split(bit_arr[:split_index:], POSSIBLE_CHAR_SIZE)
+    leftover_bits = bit_arr[split_index::]
+
+    # converts bit array to ints
+    char_nums = list(map(int, ["".join(bits) for bits in convertible_bits], [2 for _ in range(len(convertible_bits))]))
+
+    # get int to char
+    char_reference = random_char_reference(state)
+    
+    # finally, convert the char_nums to the chars
+    output = "".join([char_reference[num] for num in char_nums]) + "".join(leftover_bits)
+
     with open(f_name, "w") as f:
-        f.write("".join(bit_arr))
+        f.write(output)
 
 if __name__ == "__main__":  
 
