@@ -13,8 +13,8 @@ CHAR_SIZE = 7                                   # the size of a character in bit
 # stores options for getting args
 ENCRYPT_SHORT_OPTIONS = 'i:o:k:m:'
 ENCRYPT_LONG_OPTIONS = ['infile=', 'outfile=', 'key=', 'message=']
-DECRYPT_SHORT_OPTIONS = "i:k:o:"
-DECRYPT_LONG_OPTIONS = ['infile=', 'key=', 'outfile=']
+DECRYPT_SHORT_OPTIONS = "i:o:k:"
+DECRYPT_LONG_OPTIONS = ['infile=', 'outfile=', 'key=']
 
 # characters that can be entered into the encryption
 POSSIBLE_CHARS = list('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*?\n/ ')       # 64 TOTAL
