@@ -125,7 +125,7 @@ def num_arr_to_bin(num_arr):
 
 # adds to the hex values of each byte in the bit array: [00000000, ...] + n => [00000101, ...] when n = 5
 @register_encryption
-def add_hex(bit_arr, state):
+def add_to_char(bit_arr, state):
 
     random.seed(state)
 
@@ -139,7 +139,7 @@ def add_hex(bit_arr, state):
     return num_arr_to_bin(num_arr)
 
 @register_decryption
-def undo_add_hex(bit_arr, state):
+def undo_add_to_char(bit_arr, state):
 
     random.seed(state)
 
