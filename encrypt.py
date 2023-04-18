@@ -1,5 +1,5 @@
 import random
-import time
+import secrets
 import sys
 import getopt
 import os
@@ -8,7 +8,7 @@ from constants import HEX_DIGS, FUNC_COUNT_BOUNDS, KEY_BASE, ENCRYPT_LONG_OPTION
 from functions import ENCRYPT_FUNCS, str_to_bits, arr_split, form_base, random_char_reference
 
 # almost true randomness
-random.seed(time.time_ns())
+random.seed(secrets.randbits(32))
 
 def encrypt():
 
