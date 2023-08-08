@@ -31,6 +31,19 @@ Download all the python files of the repository to a folder. See [here](https://
     - You must include an in-file; it is the only way for a cypher to be read.
     - You must also include a key, as it is necessary for decryption. The key is given to you by the encryption algorithm.
 
+## Example
+
+To generate [`example/encrypted.txt`](https://github.com/vivaansinghvi07/encryption/tree/main/example/encrypted.txt), the following was run:
+
+```
+$ python3 encrypt.py -i encrypt.py -o example/encrypted.txt -k 111222333444555666777888999000   
+```
+
+To decrypt it back, this was run:
+
+```
+$ python3 decrypt.py -i example/encrypted.txt -o example/decrypted.txt -k 111222333444555666777888999000
+```
 
 ## Methods
 
